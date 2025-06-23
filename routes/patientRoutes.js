@@ -1,34 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const Patient = require("../models/patientModel");
+const {
+getAllPatients,
+createPatient,
+updatePatient,
+deletePatient
+} = require("../controllers/patientController");
 
 // ✅ GET all patients
-router.get("/", async (req, res) => {
-try {
-const patients = await Patient.find();
-res.json(patients);
-} catch (err) {
-res.status(500).json({ error: err.message });
-}
-});
+router.get("/", getAllPatients);
 
 // ✅ POST a new patient
-router.post("/", async (req, res) => {
-try {
-const newPatient = new Patient({
-_id: req.body._id,
-dob: req.body.dob,
-gender: req.body.gender,
-address: req.body.address,
-timeline_events: req.body.timeline_events
-});
+router.post("/", createPatient);
 
+// ✅ PUT: update patient by ID
+router.put("/:id", updatePatient);
 
-const savedPatient = await newPatient.save();
-res.status(201).json(savedPatient);
-} catch (err) {
-res.status(500).json({ error: err.message });
-}
-});
-
+// ✅ DELETE patient by ID
+router.delete("/:id", deletePatient);
 module.exports = router;
