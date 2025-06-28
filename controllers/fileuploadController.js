@@ -1,19 +1,28 @@
-const UploadedFile = require("../models/uploadedFileModel");
+const File = require("../models/fileModel");
+const path = require("path");
 
-exports.uploadFile = async (req, res) => {
-try {
-const file = req.file;
-const newFile = new UploadedFile({
-_id: req.body._id,
-filename: file.filename,
-originalname: file.originalname,
-patient_id: req.body.patient_id
-});
+// ✅ POST /upload → store file in DB
+exports.uploadFile = async (req, res, next) => {
+  try {
+    const { _id, patient_id } = req.body;
 
+    if (!req.file) {
+      const error = new Error("No file uploaded");
+      error.statusCode = 400;
+      return next(error);
+    }
 
-await newFile.save();
-res.status(201).json({ message: "File uploaded successfully", file: newFile });
-} catch (err) {
-res.status(500).json({ error: err.message });
-}
+    const file = new File({
+      _id,
+      patient_id,
+      originalName: req.file.originalname,
+      filePath: req.file.path,
+      fileType: path.extname(req.file.originalname).toLowerCase(),
+    });
+
+    const saved = await file.save();
+    res.status(201).json(saved);
+  } catch (err) {
+    next(err);
+  }
 };

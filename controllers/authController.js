@@ -1,63 +1,76 @@
 const User = require("../models/userModel");
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-// JWT secret
-const JWT_SECRET = "medivault_super_secret_key"; // You can move this to .env later
+// ✅ POST /register
+exports.registerUser = async (req, res, next) => {
+  try {
+    const { name, email, password, role } = req.body;
 
-// ✅ Register a new user
-exports.registerUser = async (req, res) => {
-try {
-const { _id, name, email, password, role } = req.body;
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      const error = new Error("User already exists");
+      error.statusCode = 400;
+      return next(error);
+    }
 
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-// Check if email already exists
-const existingUser = await User.findOne({ email });
-if (existingUser) {
-  return res.status(400).json({ message: "User already exists with this email" });
-}
+    // Create user
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role: role || "patient"
+    });
 
-// Hash password
-const hashedPassword = await bcrypt.hash(password, 10);
-
-const newUser = new User({
-  _id,
-  name,
-  email,
-  password: hashedPassword,
-  role
-});
-
-await newUser.save();
-res.status(201).json({ message: "User registered successfully" });
-} catch (err) {
-res.status(500).json({ error: err.message });
-}
+    const savedUser = await newUser.save();
+    res.status(201).json({ message: "User registered successfully", user: savedUser });
+  } catch (err) {
+    next(err);
+  }
 };
 
-// ✅ Login a user
-exports.loginUser = async (req, res) => {
-try {
-const { email, password } = req.body;
+// ✅ POST /login
+exports.loginUser = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
 
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      const error = new Error("Invalid email or password");
+      error.statusCode = 401;
+      return next(error);
+    }
 
-// Find user
-const user = await User.findOne({ email });
-if (!user) return res.status(404).json({ message: "User not found" });
+    // Check password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      const error = new Error("Invalid email or password");
+      error.statusCode = 401;
+      return next(error);
+    }
 
-// Check password
-const isMatch = await bcrypt.compare(password, user.password);
-if (!isMatch) return res.status(401).json({ message: "Invalid password" });
+    // Create JWT token
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
-// Generate token
-const token = jwt.sign(
-  { userId: user._id, role: user.role },
-  JWT_SECRET,
-  { expiresIn: "1d" }
-);
-
-res.status(200).json({ token, user });
-} catch (err) {
-res.status(500).json({ error: err.message });
-}
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        role: user.role
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
 };
