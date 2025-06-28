@@ -1,20 +1,19 @@
+const File = require("../models/fileModel");
 const path = require("path");
-const UploadedFile = require("../models/uploadedFileModel");
 
-const downloadFile = async (req, res) => {
+// ✅ GET /files/:id → download file
+exports.downloadFile = async (req, res, next) => {
   try {
-    const file = await UploadedFile.findOne({ _id: req.params.id });
-
+    const file = await File.findById(req.params.id);
     if (!file) {
-      return res.status(404).json({ error: "File not found" });
+      const error = new Error("File not found");
+      error.statusCode = 404;
+      return next(error);
     }
 
-    const filePath = path.join(__dirname, "..", "uploads", file.filename);
-    res.download(filePath, file.originalname);
-  } catch (error) {
-    console.error("Download error:", error);
-    res.status(500).json({ error: "Download failed" });
+    const fullPath = path.resolve(file.filePath);
+    res.download(fullPath, file.originalName);
+  } catch (err) {
+    next(err);
   }
 };
-
-module.exports = { downloadFile };

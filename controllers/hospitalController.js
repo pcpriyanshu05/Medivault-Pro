@@ -1,69 +1,58 @@
 const Hospital = require("../models/hospitalModel");
 
 // ✅ GET all hospitals
-exports.getAllHospitals = async (req, res) => {
-try {
-const hospitals = await Hospital.find();
-res.status(200).json(hospitals);
-} catch (err) {
-res.status(500).json({ error: err.message });
-}
+exports.getAllHospitals = async (req, res, next) => {
+  try {
+    const hospitals = await Hospital.find();
+    res.status(200).json(hospitals);
+  } catch (err) {
+    next(err);
+  }
 };
 
 // ✅ POST a new hospital
-exports.createHospital = async (req, res) => {
-try {
-const newHospital = new Hospital({
-_id: req.body._id,
-name: req.body.name,
-location: req.body.location,
-contact_email: req.body.contact_email,
-phone: req.body.phone,
-departments: req.body.departments
-});
-
-
-const savedHospital = await newHospital.save();
-res.status(201).json(savedHospital);
-} catch (err) {
-res.status(500).json({ error: err.message });
-}
+exports.createHospital = async (req, res, next) => {
+  try {
+    const newHospital = new Hospital(req.body);
+    const savedHospital = await newHospital.save();
+    res.status(201).json(savedHospital);
+  } catch (err) {
+    next(err);
+  }
 };
 
 // ✅ PUT update hospital by ID
-exports.updateHospital = async (req, res) => {
-try {
-const { id } = req.params;
+exports.updateHospital = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updatedHospital = await Hospital.findByIdAndUpdate(id, req.body, { new: true });
 
+    if (!updatedHospital) {
+      const error = new Error("Hospital not found");
+      error.statusCode = 404;
+      return next(error);
+    }
 
-const updated = await Hospital.findByIdAndUpdate(id, req.body, {
-  new: true
-});
-
-if (!updated) {
-  return res.status(404).json({ message: "Hospital not found" });
-}
-
-res.status(200).json(updated);
-} catch (err) {
-res.status(500).json({ error: err.message });
-}
+    res.status(200).json(updatedHospital);
+  } catch (err) {
+    next(err);
+  }
 };
 
 // ✅ DELETE hospital by ID
-exports.deleteHospital = async (req, res) => {
-try {
-const { id } = req.params;
+exports.deleteHospital = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const deletedHospital = await Hospital.findByIdAndDelete(id);
 
+    if (!deletedHospital) {
+      const error = new Error("Hospital not found");
+      error.statusCode = 404;
+      return next(error);
+    }
 
-const deleted = await Hospital.findByIdAndDelete(id);
-
-if (!deleted) {
-  return res.status(404).json({ message: "Hospital not found" });
-}
-
-res.status(200).json({ message: "Hospital deleted successfully" });
-} catch (err) {
-res.status(500).json({ error: err.message });
-}
+    res.status(200).json({ message: "Hospital deleted successfully" });
+  } catch (err) {
+    next(err);
+  }
 };

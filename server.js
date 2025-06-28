@@ -49,7 +49,10 @@ app.use("/api/upload", fileUploadRoutes);
 app.use("/uploads", express.static("uploads"));
 
 
-
 const fileRoutes = require("./routes/fileRoutes");
 app.use("/api/files", fileRoutes);
+
+const errorHandler = require("./middleware/errorHandler");
+app.use(errorHandler);
+
 
