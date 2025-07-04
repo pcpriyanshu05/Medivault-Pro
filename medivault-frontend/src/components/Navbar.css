@@ -1,0 +1,36 @@
+.navbar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 15px 40px;
+background: linear-gradient(to right, #831c85, #17b4b4);
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+color: white;
+font-family: 'Segoe UI', sans-serif;
+}
+
+.logo {
+font-size: 1.8rem;
+font-weight: lighter;
+}
+
+.logo span {
+color: #e29898;
+}
+
+.nav-links {
+list-style: none;
+display: flex;
+gap: 30px;
+}
+
+.nav-links a {
+color: white;
+font-weight: 500;
+text-decoration: none;
+transition: all 0.2s ease;
+}
+
+.nav-links a:hover {
+color: #fffc9e;
+}

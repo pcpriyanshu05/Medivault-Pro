@@ -1,0 +1,13 @@
+.app-container {
+  text-align: center;
+  padding: 50px;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #4CAF50;
+}
+
+p {
+  font-size: 18px;
+}

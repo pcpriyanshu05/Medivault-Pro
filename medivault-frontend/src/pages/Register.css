@@ -1,0 +1,75 @@
+/* General medical theme */
+body {
+  background: linear-gradient(to right, #e6f7ff, #ffffff);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.register-box {
+  background-color: #fdfefe;
+  padding: 40px;
+  width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 128, 255, 0.2);
+  border-top: 5px solid #00aaff;
+}
+
+.register-title {
+  text-align: center;
+  color: #007acc;
+  margin-bottom: 25px;
+  font-size: 24px;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.register-form input {
+  margin-bottom: 15px;
+  padding: 12px 14px;
+  border: 1px solid #cce7ff;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: all 0.2s;
+}
+
+.register-form input:focus {
+  outline: none;
+  border-color: #00aaff;
+  box-shadow: 0 0 5px rgba(0, 170, 255, 0.3);
+}
+
+.register-form button {
+  background-color: #00aaff;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.register-form button:hover {
+  background-color: #008fd1;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.login-link a {
+  color: #007acc;
+  text-decoration: none;
+  font-weight: 500;
+}
