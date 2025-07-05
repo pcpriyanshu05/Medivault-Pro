@@ -15,7 +15,7 @@ const DoctorDashboard = () => {
   return (
     <div className="dashboard-container-doctor">
       <aside className="sidebar-doctor">
-        <div className="brand-doctor">🏥 MEDIVAULT PRO</div>
+        <div className="brand-doctor">MEDIVAULT </div>
         <nav className="nav-doctor">
           <button className="nav-item-doctor">Dashboard</button>
           <button className="nav-item-doctor">Appointments</button>
