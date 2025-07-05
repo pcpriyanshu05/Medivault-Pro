@@ -32,3 +32,22 @@ transition: 0.3s ease;
 .cta-button:hover {
 background-color: #00cec9;
 }
+
+@media screen and (max-width: 768px) {
+  .cta-section {
+    padding: 40px 15px;
+  }
+
+  .cta-section h2 {
+    font-size: 24px;
+  }
+
+  .cta-section p {
+    font-size: 16px;
+  }
+
+  .cta-button {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+}
