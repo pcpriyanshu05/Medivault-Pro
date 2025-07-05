@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   return (
     <div className="dashboard-container-admin">
       <aside className="sidebar-admin">
-        <div className="brand-admin">🏥 MEDIVAULT PRO</div>
+        <div className="brand-admin">MEDIVAULT</div>
         <nav className="nav-admin">
           <button className="nav-item-admin">Dashboard</button>
           <button className="nav-item-admin">Manage Users</button>

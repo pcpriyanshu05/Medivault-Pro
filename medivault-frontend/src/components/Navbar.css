@@ -16,13 +16,14 @@
 }
 
 .logo span {
-  color: #e29898;
+  color: #eeeeee;
 }
 
 .nav-links {
   list-style: none;
   display: flex;
   gap: 30px;
+  flex-wrap: wrap;
 }
 
 .nav-links a {
@@ -40,13 +41,13 @@
   .navbar {
     flex-direction: column;
     align-items: flex-start;
-    padding: 10px 20px;
+    padding: 20px;
   }
 
   .nav-links {
     flex-direction: column;
-    width: 100%;
+    gap: 15px;
     margin-top: 10px;
-    gap: 10px;
+    width: 100%;
   }
 }

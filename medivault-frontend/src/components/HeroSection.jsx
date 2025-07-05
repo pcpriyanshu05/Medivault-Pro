@@ -9,7 +9,7 @@ const HeroSection = () => {
         <h1>
           Your Health <span className="highlight">One Vault</span>
         </h1>
-        <p>Medivault Pro is a trusted digital vault for all your medical records.</p>
+        <p>Medivault  is a trusted digital vault for all your medical records.</p>
         <Link to="/register" className="hero-button">
           Get Started
         </Link>
