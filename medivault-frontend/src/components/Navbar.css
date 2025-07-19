@@ -15,9 +15,10 @@
   font-weight: lighter;
 }
 
-.logo span {
-  color: #eeeeee;
+.white-text {
+  color: white;
 }
+
 
 .nav-links {
   list-style: none;
@@ -36,6 +37,37 @@
 .nav-links a:hover {
   color: #fffc9e;
 }
+.nav-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 500;
+  transition: background 0.3s ease, color 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.login-btn {
+  background-color:#4621d9 ;
+  
+  color: #fff;
+}
+
+.login-btn:hover {
+  background-color: #7f17c4;
+  color: #440b45;
+}
+
+.register-btn {
+  background-color: #4621d9;
+  color: #5a275b;
+  
+  margin-left: 10px;
+}
+
+.register-btn:hover {
+  background-color: #7f17c4;
+  color: #154360;
+}
+
 
 @media screen and (max-width: 768px) {
   .navbar {
@@ -49,5 +81,9 @@
     gap: 15px;
     margin-top: 10px;
     width: 100%;
+  }
+  .nav-btn {
+    width: 100%;
+    text-align: center;
   }
 }
