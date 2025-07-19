@@ -4,21 +4,34 @@ exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "No token provided" });
+    return res.status(401).json({ 
+      success: false,
+      message: "No token provided" 
+    });
   }
 
   const token = authHeader.split(" ")[1];
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Add decoded token (id, role etc.) to req.user
+    
+    // Standardize user object
+    req.user = {
+      id: decoded.id || decoded._id, // Handle both 'id' and '_id'
+      role: decoded.role
+    };
+    
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Invalid or expired token" });
+    return res.status(401).json({ 
+      success: false,
+      message: "Invalid or expired token",
+      error: err.message 
+    });
   }
 };
 
-// Optional: Role-based access middleware
+// Role checkers remain exactly the same
 exports.isDoctor = (req, res, next) => {
   if (req.user.role !== "doctor") {
     return res.status(403).json({ message: "Only doctors can access this route" });

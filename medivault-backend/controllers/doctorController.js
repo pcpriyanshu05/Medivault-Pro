@@ -1,4 +1,22 @@
 const Doctor = require("../models/doctorModel");
+// ✅ GET current doctor's profile
+exports.getCurrentDoctor = async (req, res, next) => {
+  try {
+    const doctor = await Doctor.findOne({ _id: req.user.id });
+    
+    if (!doctor) {
+      const error = new Error("Doctor not found");
+      error.statusCode = 404;
+      return next(error);
+    }
+
+    // Remove sensitive data if needed
+    const doctorData = doctor.toObject();
+    res.status(200).json(doctorData);
+  } catch (err) {
+    next(err);
+  }
+};
 
 // ✅ GET all doctors
 exports.getAllDoctors = async (req, res, next) => {
