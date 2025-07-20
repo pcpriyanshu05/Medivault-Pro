@@ -4,7 +4,8 @@ const {
   getAllPatients,
   createPatient,
   updatePatient,
-  deletePatient
+  deletePatient,
+  getPatientById,
 } = require("../controllers/patientController");
 
 // ✅ JWT middleware
@@ -42,5 +43,9 @@ router.put("/:id", verifyToken, isAdmin, updatePatient);
 
 // ✅ DELETE patient by ID (admin only)
 router.delete("/:id", verifyToken, isAdmin, deletePatient);
+
+
+router.get("/:id", verifyToken, isDoctor, getPatientById);
+
 
 module.exports = router;

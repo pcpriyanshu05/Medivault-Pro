@@ -64,3 +64,14 @@ exports.deletePatient = async (req, res, next) => {
     next(err);
   }
 };
+//fetch patient by id
+exports.getPatientById = async (req, res, next) => {
+  try {
+    const patient = await Patient.findById(req.params.id);
+    if (!patient) return res.status(404).json({ message: "Patient not found" });
+    res.status(200).json(patient);
+  } catch (err) {
+    next(err);
+  }
+};
+
