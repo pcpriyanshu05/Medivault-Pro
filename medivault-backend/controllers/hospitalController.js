@@ -56,3 +56,20 @@ exports.deleteHospital = async (req, res, next) => {
     next(err);
   }
 };
+
+// ✅ GET hospital by ID
+exports.getHospitalById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const hospital = await Hospital.findById(id);
+
+    if (!hospital) {
+      return res.status(404).json({ message: "Hospital not found" });
+    }
+
+    res.status(200).json(hospital);
+  } catch (err) {
+    next(err);
+  }
+};
+
