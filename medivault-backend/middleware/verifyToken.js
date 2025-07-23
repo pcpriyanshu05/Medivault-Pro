@@ -52,3 +52,13 @@ exports.isPatient = (req, res, next) => {
   }
   next();
 };
+
+// ... (keep existing verifyToken code)
+
+exports.isHospital = (req, res, next) => {
+  if (req.user.role !== "hospital") {
+    return res.status(403).json({ message: "Hospital access only" });
+  }
+  next();
+};
+
