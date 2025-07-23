@@ -6,7 +6,6 @@ if (mongoose.connection.models['User']) {
 }
 
 const userSchema = new mongoose.Schema({
-  _id: String, // Preserving your existing ID format
   name: {
     type: String,
     required: true
@@ -30,6 +29,6 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-});
+},{_id:true});
 
 module.exports = mongoose.model("User", userSchema);
