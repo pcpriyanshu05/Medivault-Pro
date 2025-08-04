@@ -15,7 +15,14 @@ const DoctorDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const navigate = useNavigate();
-  const BASE_URL = 'https://medivault-backend-ndak.onrender.com';
+  const BASE_URL = 'https://medivault-pro-7zkp.onrender.com';
+
+  // Add state for pagination
+  const [patientsPage, setPatientsPage] = useState(1);
+  const [patientsTotalPages, setPatientsTotalPages] = useState(1);
+  const [recordsPage, setRecordsPage] = useState(1);
+  const [recordsTotalPages, setRecordsTotalPages] = useState(1);
+  const [loadingStats, setLoadingStats] = useState(true);
 
   
   // 🔴 Fetch Doctor Data (Backend: /api/doctors/me)
@@ -58,49 +65,54 @@ const DoctorDashboard = () => {
     fetchDoctorData();
   }, [navigate]);
 
-  // 🔴 Fetch Patients (Backend: /api/patients)
+  // 🔴 Fetch Patients (paginated)
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/api/patients`, {
-          headers: { 
+        setLoadingStats(true);
+        const res = await fetch(`${BASE_URL}/api/patients?page=${patientsPage}&limit=20`, {
+          headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'
           }
         });
-        
         if (!res.ok) throw new Error('Failed to fetch patients');
-        
         const data = await res.json();
-        setPatients(data);
+        setPatients(data.patients);
+        setPatientsTotalPages(data.totalPages);
       } catch (err) {
         console.error("Failed to fetch patients:", err);
+      } finally {
+        setLoadingStats(false);
       }
     };
     fetchPatients();
-  }, []);
+  }, [patientsPage]);
 
-  // 🔴 Fetch Shared Records (Backend: /api/shared)
+  // 🔴 Fetch Shared Records (paginated, filtered by shared_with)
   useEffect(() => {
     const fetchSharedRecords = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/api/shared`, {
-          headers: { 
+        setLoadingStats(true);
+        const userId = localStorage.getItem('userId');
+        const res = await fetch(`${BASE_URL}/api/shared?page=${recordsPage}&limit=20&shared_with=${userId}`, {
+          headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'
           }
         });
-        
         if (!res.ok) throw new Error('Failed to fetch shared records');
-        
         const data = await res.json();
-        setSharedRecords(data);
+        setSharedRecords(data.records);
+        setRecordsTotalPages(data.totalPages);
       } catch (err) {
         console.error("Failed to fetch shared records:", err);
+      } finally {
+        setLoadingStats(false);
       }
     };
     fetchSharedRecords();
-  }, []);
+  }, [recordsPage]);
 
   // 🔴 Submit Prescription (Backend: /api/prescriptions)
   const submitPrescription = async () => {
@@ -233,12 +245,16 @@ const DoctorDashboard = () => {
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-icon"><i className="fas fa-users"></i></div>
-                <div className="stat-value">{patients.length}</div>
+                <div className="stat-value">
+                  {loadingStats ? <div className="stat-skeleton" /> : patients.length}
+                </div>
                 <div className="stat-label">Active Patients</div>
               </div>
               <div className="stat-card">
                 <div className="stat-icon"><i className="fas fa-file-medical"></i></div>
-                <div className="stat-value">{sharedRecords.length}</div>
+                <div className="stat-value">
+                  {loadingStats ? <div className="stat-skeleton" /> : sharedRecords.length}
+                </div>
                 <div className="stat-label">Shared Records</div>
               </div>
             </div>
@@ -276,14 +292,18 @@ const DoctorDashboard = () => {
                   <div>{patient.gender}</div>
                   <div className="timeline-events">
                     {patient.timeline_events?.slice(0, 2).map((event, i) => (
-                      <span key={i} className="event-tag">{event}</span>
-                    ))}
+                      <span key={i} className="event-tag">
+                        {event.type} • {event.ref_id}
+                        <br />
+                        {new Date(event.timestamp).toLocaleDateString()}</span>
+                      ))
+                    }
                     {patient.timeline_events?.length > 2 && (
                       <span className="more-events">+{patient.timeline_events.length - 2} more</span>
                     )}
                   </div>
                   <div className="actions">
-                    <button className="action-btn small">
+                    <button className="action-btn small" onClick={() => navigate(`/dashboard/doctor/patient/${patient._id}`)}>
                       <i className="fas fa-eye"></i> View Records
                     </button>
                     <button 

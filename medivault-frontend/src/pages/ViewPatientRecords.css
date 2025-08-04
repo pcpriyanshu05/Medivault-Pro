@@ -1,0 +1,128 @@
+.dashboard-container {
+  padding: 30px;
+  background: #f8fbff;
+  min-height: 100vh;
+}
+
+.section-header {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.section-header h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e1e1e;
+}
+
+.underline {
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(to right, #5a4de7, #00a8ff);
+  border-radius: 2px;
+  margin-top: 6px;
+  animation: slideCenter 1s ease forwards;
+}
+
+@keyframes slideCenter {
+  from {
+    transform: scaleX(0);
+    transform-origin: center;
+  }
+  to {
+    transform: scaleX(1);
+    transform-origin: center;
+  }
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.dashboard-card {
+  background: white;
+  padding: 18px 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.dashboard-card h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.dashboard-card p {
+  font-size: 15px;
+  color: #444;
+}
+
+.section-subtitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #1f1f1f;
+}
+
+.timeline-events {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.timeline-card {
+  background: white;
+  padding: 16px 18px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  width: 260px;
+  transition: 0.3s;
+}
+
+.timeline-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.timeline-card h5 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #5a4de7;
+  margin-bottom: 6px;
+}
+
+.timeline-card p {
+  font-size: 14px;
+  margin: 2px 0;
+  color: #333;
+}
+
+.muted-text {
+  font-style: italic;
+  color: #888;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: #5a4de7;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: all 0.3s;
+}
+
+.back-button:hover {
+  color: #2d1dfb;
+  text-decoration: underline;
+}

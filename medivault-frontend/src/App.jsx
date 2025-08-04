@@ -9,6 +9,9 @@ import About from "./pages/About";
 import AdminDashboard from "./pages/AdminDashboard";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import PatientDashboard from "./pages/PatientDashboard";
+import HospitalDashboard from "./pages/HospitalDashboard";
+import ViewPatientRecords from "./pages/ViewPatientRecords";
+
 
 import ProtectedRoute from "./pages/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
@@ -43,6 +46,14 @@ return (
           </ProtectedRoute>
         }
       />
+       <Route
+         path="/dashboard/doctor/patient/:patientId"
+         element={
+           <ProtectedRoute allowedRoles={["doctor"]}>
+            <ViewPatientRecords />
+           </ProtectedRoute>
+        }
+      />
       <Route
         path="/dashboard/patient"
         element={
@@ -51,6 +62,14 @@ return (
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/dashboard/hospital"
+         element={
+        <ProtectedRoute allowedRoles={["hospital"]}>
+         <HospitalDashboard />
+      </ProtectedRoute>
+    }
+   />
     </Routes>
   </Router>
 </AuthProvider>

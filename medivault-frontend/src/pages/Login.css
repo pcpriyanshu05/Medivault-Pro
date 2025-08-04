@@ -4,33 +4,42 @@
   box-sizing: border-box;
 }
 
+html, body, #root {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
   background: #eef2ff;
-  overflow-x: hidden;
   color: #1f2937;
 }
 
 .container {
   display: flex;
+  width: 100vw;
   min-height: 100vh;
-  overflow: hidden;
 }
 
+/* Login section animation - slides from left */
 .login-section {
   flex: 1;
-  background: linear-gradient(135deg, #fffefb, #fffcea); /* soft cream */
+  min-width: 50%;
+  background: linear-gradient(135deg, #fffefb, #fffcea);
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 2rem;
   position: relative;
   animation: slideInFromLeft 0.7s ease-out;
-  overflow: hidden;
+  animation-fill-mode: both;
 }
 
+/* Welcome section animation - slides from right with delay */
 .welcome-section {
   flex: 1;
+  min-width: 50%;
   background: linear-gradient(135deg, #7c3aed, #6366f1);
   color: #ffffff;
   display: flex;
@@ -39,6 +48,8 @@ body {
   text-align: center;
   position: relative;
   animation: slideInFromRight 0.7s ease-out;
+  animation-delay: 0.3s;
+  animation-fill-mode: both;
 }
 
 @keyframes slideInFromLeft {
@@ -51,7 +62,6 @@ body {
   100% { transform: translateX(0); opacity: 1; }
 }
 
-/* Login Card */
 .login-card {
   background: rgba(255, 255, 255, 0.95);
   padding: 2rem;
@@ -104,7 +114,7 @@ body {
 
 .login-btn:hover {
   transform: scale(1.02);
-  background: linear-gradient(135deg, #4f46e5, #7c3aed); /* deeper violet-blue */
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
   box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
 }
 
@@ -125,10 +135,10 @@ body {
   color: #7c3aed;
 }
 
-/* Welcome Section */
 .welcome-content {
   z-index: 2;
   max-width: 500px;
+  padding: 20px;
 }
 
 .welcome-content h1 {
@@ -146,7 +156,6 @@ body {
   opacity: 0.9;
 }
 
-/* Right-side floating bubble animation (kept) */
 .blob {
   position: absolute;
   border-radius: 50%;
@@ -162,12 +171,14 @@ body {
   top: 20%;
   left: 10%;
 }
+
 .blob:nth-child(3) {
   width: 180px;
   height: 180px;
   bottom: 15%;
   right: 8%;
 }
+
 .blob:nth-child(4) {
   width: 150px;
   height: 150px;
@@ -180,14 +191,47 @@ body {
   50% { transform: translateY(-20px); }
 }
 
-/* Responsive */
+@media (max-width: 992px) {
+  .welcome-content h1 {
+    font-size: 2.2rem;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
-  .welcome-section,
-  .login-section {
+
+  .login-section,
+  .welcome-section {
+    width: 100%;
+    min-width: 100%;
     flex: none;
-    height: 50vh;
+    min-height: 50vh;
+    height: auto;
+  }
+
+  .welcome-content {
+    max-width: 100%;
+    padding: 2rem;
+  }
+
+  .welcome-content h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+
+  .login-card h2 {
+    font-size: 1.5rem;
+  }
+
+  .welcome-content h1 {
+    font-size: 1.8rem;
   }
 }
