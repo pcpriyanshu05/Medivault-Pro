@@ -1,10 +1,29 @@
 const Patient = require("../models/patientModel");
 
-// ✅ GET all patients
+// ✅ GET all patients (paginated, select fields)
 exports.getAllPatients = async (req, res, next) => {
   try {
-    const patients = await Patient.find();
-    res.status(200).json(patients);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    // Uncomment and adjust if you add doctor_id to Patient model
+    // const doctorId = req.user.id;
+    // const filter = { doctor_id: doctorId };
+    const filter = {};
+
+    const patients = await Patient.find(filter)
+      .select('_id name user_id')
+      .skip(skip)
+      .limit(limit);
+    const total = await Patient.countDocuments(filter);
+
+    res.status(200).json({
+      patients,
+      page,
+      totalPages: Math.ceil(total / limit),
+      total
+    });
   } catch (err) {
     next(err);
   }

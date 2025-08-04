@@ -1,46 +1,127 @@
-
-
 const User = require("../models/userModel");
+const Doctor = require("../models/doctorModel");
+const Patient = require("../models/patientModel");
+const Hospital = require("../models/hospitalModel");
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 
 // ✅ POST /register
 exports.registerUser = async (req, res, next) => {
 try {
-const { name, email, password, role } = req.body;
+const {
+name,
+email,
+password,
+role,
+// patient
+age,
+gender,
+address,
+contactNumber,
+medicalHistory,
+// doctor
+licenseNumber,
+specialization,
+hospitalId,
+experienceYears,
+// hospital
+hospitalName,
+location,
+city,
+state,
+pinCode,
+hospitalPhone,
+hospitalEmail
+} = req.body;
 
 
-// Validate role input
 const validRoles = ["patient", "doctor", "hospital"];
-if (role && !validRoles.includes(role)) {
-  const error = new Error("Invalid role specified");
-  error.statusCode = 400;
-  return next(error);
+if (!validRoles.includes(role)) {
+  return res.status(400).json({ message: "Invalid role specified" });
 }
 
-// Check if user already exists
 const existingUser = await User.findOne({ email });
 if (existingUser) {
-  const error = new Error("User already exists");
-  error.statusCode = 400;
-  return next(error);
+  return res.status(400).json({ message: "User already exists" });
 }
 
-// Hash password
-const salt = await bcrypt.genSalt(10);
-const hashedPassword = await bcrypt.hash(password, salt);
+const hashedPassword = await bcrypt.hash(password, 10);
 
-// Create user
 const newUser = new User({
   name,
   email,
   password: hashedPassword,
-  role: role || "patient" // Default to patient if no role specified
+  role,
+  contactNumber
 });
 
 const savedUser = await newUser.save();
-res.status(201).json({ 
-  message: "User registered successfully", 
+
+const userId = savedUser._id.toString();
+
+// Generate custom _id like "patient_abc123"
+const rolePrefix = role.toLowerCase();
+const customId = `${rolePrefix}_${userId.slice(-6)}`;
+
+if (role === "patient") {
+  const existingPatient = await Patient.findOne({ user_id: savedUser._id });
+  if (!existingPatient) {
+    await Patient.create({
+      _id: customId,
+      user_id: savedUser._id,
+      dob: age,
+      gender,
+      address,
+      contactNumber,
+      medicalHistory: medicalHistory ? medicalHistory.split(",").map(s => s.trim()) : [],
+      timeline_events: []
+    });
+  }
+}
+
+
+if (role === "doctor") {
+  const existingDoctor = await Doctor.findOne({ user_id: savedUser._id });
+  if (!existingDoctor) {
+    await Doctor.create({
+      _id: customId,
+      user_id: savedUser._id,
+      name,
+      licenseNumber,
+      specialization,
+      experience_years: Number(experienceYears),
+      hospital_id: hospitalId || "",
+      contact_email: email,
+      phone: contactNumber
+    });
+  }
+}
+
+
+if (role === "hospital") {
+  const existingHospital = await Hospital.findOne({ user_id: savedUser._id });
+  if (!existingHospital) {
+    await Hospital.create({
+      _id: customId,
+      user_id: savedUser._id,
+      name: hospitalName,
+      location,
+      city,
+      state,
+      pinCode,
+      contact_email: hospitalEmail,
+      phone: hospitalPhone,
+      hospitalEmail,
+      departments: []
+    });
+  }
+}
+
+
+res.status(201).json({
+  message: "User registered successfully",
   user: {
     id: savedUser._id,
     name: savedUser.name,
@@ -49,10 +130,10 @@ res.status(201).json({
   }
 });
 } catch (err) {
+console.error("Registration error:", err);
 next(err);
 }
 };
-
 // ✅ POST /login
 exports.loginUser = async (req, res, next) => {
 try {

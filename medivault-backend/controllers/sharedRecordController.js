@@ -1,11 +1,27 @@
 
 const SharedRecord = require("../models/sharedRecordModel");
 
-// ✅ GET all shared records
+// ✅ GET all shared records (paginated, filter by shared_with)
 exports.getAllSharedRecords = async (req, res, next) => {
   try {
-    const records = await SharedRecord.find();
-    res.status(200).json(records);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+    const sharedWith = req.query.shared_with;
+    const filter = sharedWith ? { shared_with: sharedWith } : {};
+
+    const records = await SharedRecord.find(filter)
+      .select('_id patient_id record_type record_id shared_on access_expiry')
+      .skip(skip)
+      .limit(limit);
+    const total = await SharedRecord.countDocuments(filter);
+
+    res.status(200).json({
+      records,
+      page,
+      totalPages: Math.ceil(total / limit),
+      total
+    });
   } catch (err) {
     next(err);
   }
@@ -51,3 +67,5 @@ exports.deleteSharedRecord = async (req, res, next) => {
     next(err);
   }
 };
+
+// NOTE: Add an index to shared_with in the model for performance if not already present.

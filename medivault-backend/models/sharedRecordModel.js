@@ -13,4 +13,6 @@ default: Date.now
 access_expiry: Date // kab tak dekh sakta hai
 });
 
+sharedRecordSchema.index({ shared_with: 1 });
+
 module.exports = mongoose.model("SharedRecord", sharedRecordSchema);
